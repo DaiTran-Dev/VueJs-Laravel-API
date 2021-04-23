@@ -1,42 +1,33 @@
 <template>
   <div>
     <b-table
-      :items="items"
-      :fields="fields"
+      :items="itemsTable"
+      :fields="constantSystem.FIELDS_TABLE_TASK"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       responsive="sm"
       bordered
-    ></b-table>
+    >
+       <template #cell(edit)="row">
+          <b-button variant="outline-success" type="button" @click="$emit('click-edit',row.item.id)">Edit</b-button>
+      </template>
+      <template #cell(delete)>
+        <b-button variant="outline-danger" type="button">Danger</b-button>
+      </template>
+    </b-table>
   </div>
 </template>
 <script>
+import constantSystem from "../../constant/constantSystem.vue";
 export default {
   data() {
     return {
       sortBy: "age",
       sortDesc: false,
-      fields: [
-        { key: "id", sortable: true },
-        { key: "issue_type", sortable: true },
-        { key: "summary", sortable: true },
-        { key: "reporter", sortable: false },
-        { key: "dueDate", sortable: true },
-        { key: "assignee", sortable: true },
-      ],
-      items: [
-        {
-          isActive: true,
-          age: 40,
-          first_name: "Dickerson",
-          last_name: "Macdonald",
-        },
-        { isActive: false, age: 21, first_name: "Larsen", last_name: "Shaw" },
-        { isActive: false, age: 89, first_name: "Geneva", last_name: "Wilson" },
-        { isActive: true, age: 38, first_name: "Jami", last_name: "Carney" },
-      ],
+      constantSystem: constantSystem,
     };
   },
+  props: ["itemsTable"],
 };
 </script>
 

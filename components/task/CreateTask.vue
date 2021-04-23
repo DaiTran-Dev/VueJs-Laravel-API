@@ -8,7 +8,7 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedProject"
-            :options="options"
+            :options="constantSystem.PROJECT"
             size="sm"
           ></b-form-select>
         </b-col>
@@ -20,7 +20,7 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedIssue"
-            :options="option"
+            :options="constantSystem.ISSUE"
             size="sm"
           ></b-form-select>
         </b-col>
@@ -31,7 +31,7 @@
           <label>Summary:</label>
         </b-col>
         <b-col sm="8">
-          <b-form-input type="text" size="sm"></b-form-input>
+          <b-form-input type="text" size="sm" v-model="summary"></b-form-input>
         </b-col>
       </b-row>
 
@@ -42,7 +42,7 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedReporter"
-            :options="option"
+            :options="constantSystem.REPORTER"
             size="sm"
           ></b-form-select>
         </b-col>
@@ -89,16 +89,34 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedAssignee"
-            :options="option"
+            :options="constantSystem.ASSIGNEE"
             size="sm"
           ></b-form-select>
         </b-col>
+      </b-row>
+      <b-row class="footer-modal">
+        <div class="d-flex justify-content-end">
+          <b-form-checkbox
+            v-model="createAnother"
+            name="createAnother"
+            value="true"
+            unchecked-value="false"
+            class="mr-4"
+          >
+            <span class="text-nowrap">Create Another</span>
+          </b-form-checkbox>
+          <b-button type="submit" variant="primary" class="mr-3" size="sm"
+            >Create</b-button
+          >
+          <b-button type="reset" variant="danger">Cancel</b-button>
+        </div>
       </b-row>
     </b-form>
   </div>
 </template>
 
 <script>
+import constantSystem from "../../constant/constantSystem.vue";
 export default {
   data() {
     return {
@@ -106,45 +124,84 @@ export default {
       selectedIssue: null,
       selectedReporter: null,
       selectedAssignee: null,
-      desscription:'',
+      desscription: "",
       dueDate: "",
-      options: [
-        { value: null, text: "Please select an option" },
-        { value: "a", text: "This is First option" },
-        { value: "b", text: "Selected Option" },
-        { value: { C: "3PO" }, text: "This is an option with object value" },
-        { value: "d", text: "This one is disabled", disabled: true },
-      ],
-      option: [
-        { value: null, text: "Please select an option" },
-        { value: "a", text: "This is First option" },
-        { value: "b", text: "Selected Option" },
-        { value: { C: "3PO" }, text: "This is an option with object value" },
-        { value: "d", text: "This one is disabled", disabled: true },
-      ],
+      summary: "",
+      constantSystem: constantSystem,
+      createAnother: false,
     };
   },
-  props: ["activeCreate"],
+  props: ["activeForm", "taskId", "btnOpen"],
   methods: {
+    getDataForm() {
+      var task = {
+        project_id: this.selectedProject,
+        issue_type: this.selectedIssue,
+        assignee: this.selectedAssignee,
+        reporter: this.selectedReporter,
+        due_date: this.dueDate,
+        description: this.desscription,
+        attachment: "https://picsum.photos/200/300",
+        summary: this.summary,
+      };
+      return task;
+    },
+    setDataForm(task) {
+      if (task) {
+        this.summary = task.summary;
+        this.selectedProject = task.project;
+        this.selectedIssue = task.issue_type;
+        this.selectedAssignee = task.assignee;
+        this.selectedReporter = task.reporter;
+        this.dueDate = task.due_date;
+        this.desscription = task.description;
+        this.attachment = task.attachment;
+      }
+    },
     onSubmit(event) {
-      if (activeCreate) {
-        console.log("ok insert");
+      event.preventDefault();
+      var task = this.getDataForm();
+      if (this.taskId == null) {
+        this.createTask(task);
       } else {
-        console.log("no insert");
+        this.updateTask(this.taskId,task);
       }
     },
     onReset(event) {
       event.preventDefault();
-      // Reset our form values
-      this.form.email = "";
-      this.form.name = "";
-      this.form.food = null;
-      this.form.checked = [];
-      // Trick to reset/clear native browser form validation state
-      this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
+    },
+    async createTask(task) {
+      const response = await this.$axios
+        .$post(this.constantSystem.BASE_API, task)
+        .then((res) => {
+          console.log("success");
+          console.log(res);
+        })
+        .catch(({ response: err }) => {
+          console.log("fail");
+          console.log(err);
+        });
+    },
+    async updateTask(taskId,task) {
+      console.log(task);
+      var url = this.constantSystem.BASE_API + "/" + taskId;
+      const response = await this.$axios
+        .$put(url, task)
+        .then((res) => {
+          console.log("success");
+          console.log(res);
+        })
+        .catch(({ response: err }) => {
+          console.log("fail");
+          console.log(err);
+        });
+    },
+    async findTask(taskId) {
+      if (taskId != null) {
+        var url = this.constantSystem.BASE_API + "/" + taskId;
+        const response = await this.$axios.$get(url);
+        this.setDataForm(response);
+      }
     },
     formatFileNames(files) {
       return files.length === 1
@@ -152,10 +209,19 @@ export default {
         : `${files.length} files selected`;
     },
   },
+  mounted() {
+    this.findTask(this.taskId);
+  },
 };
 </script>
 <style>
 #form-create .my-1 {
   margin-bottom: 20px !important;
+}
+.footer-modal {
+  border-top: 1px solid #dee2e6;
+  padding-top: 20px;
+  margin-top: 20px;
+  justify-content: flex-end;
 }
 </style>
