@@ -2,30 +2,31 @@
 //Project
 const PROJECT = [
   { value: "", text: "Please select an option" },
-  { value: 0, text: "Demo project laravel" },
-  { value: 1, text: "Project python" },
-  { value: 2, text: "Project C#" },
+  { value: 1, text: "Demo project laravel" },
+  { value: 2, text: "Project python" },
+  { value: 3, text: "Project C#" },
 ];
 
 //Issue Type
 const ISSUE = [
   { value: "", text: "Please select an option" },
-  { value: 0, text: "Task" },
-  { value: 1, text: "Erros" },
-  { value: 2, text: "Delay" },
+  { value: 1, text: "Task" },
+  { value: 2, text: "Erros" },
+  { value: 3, text: "Delay" },
 ];
 
 // Reporter
 const REPORTER = [
   { value: "", text: "Please select an option" },
-  { value: 0, text: "Jonie [Admin]" },
-  { value: 1, text: "Rel [Employee]" },
+  { value: 1, text: "Jonie [Admin]" },
+  { value: 2, text: "Rel [Employee]" },
 ];
 
 // Assignee
 const ASSIGNEE = [
-  { value: 0, text: "Automatic" },
-  { value: 1, text: "Rel Dai" },
+  { value: "", text: "Please select an option" },
+  { value: 1, text: "Automatic" },
+  { value: 2, text: "Rel Dai" },
 ];
 
 //Fields table task

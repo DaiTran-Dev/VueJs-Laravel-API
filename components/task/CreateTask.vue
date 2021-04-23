@@ -25,16 +25,25 @@
           ></b-form-select>
         </b-col>
       </b-row>
-
       <b-row class="my-1">
         <b-col sm="2">
           <label>Summary:</label>
         </b-col>
         <b-col sm="8">
-          <b-form-input type="text" size="sm" v-model="summary"></b-form-input>
+          <b-form-input
+            type="text"
+            size="sm"
+            v-model="summary"
+            :state="summaryState"
+            aria-describedby="input-live-help input-live-feedback-summary"
+            placeholder="Enter your name"
+            trim
+          ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback-summary">
+            {{summaryErrorMessage}}
+          </b-form-invalid-feedback>
         </b-col>
       </b-row>
-
       <b-row class="my-1">
         <b-col sm="2">
           <label for="input-none">Reporter</label>
@@ -94,7 +103,7 @@
           ></b-form-select>
         </b-col>
       </b-row>
-      <b-row class="footer-modal">
+      <div class="footer-modal">
         <div class="d-flex justify-content-end">
           <b-form-checkbox
             v-model="createAnother"
@@ -110,7 +119,7 @@
           >
           <b-button type="reset" variant="danger">Cancel</b-button>
         </div>
-      </b-row>
+      </div>
     </b-form>
   </div>
 </template>
@@ -129,6 +138,13 @@ export default {
       summary: "",
       constantSystem: constantSystem,
       createAnother: false,
+      summaryState: null,
+      projectState:null,
+      reporterState:null,
+      summaryErrorMessage:"",
+      projectErrorMessage:"",
+      reporterErrorMessage:"",
+
     };
   },
   props: ["activeForm", "taskId", "btnOpen"],
@@ -146,7 +162,7 @@ export default {
       };
       return task;
     },
-    setDataForm(task) {
+    setDataForm(task = null) {
       if (task) {
         this.summary = task.summary;
         this.selectedProject = task.project;
@@ -156,6 +172,15 @@ export default {
         this.dueDate = task.due_date;
         this.desscription = task.description;
         this.attachment = task.attachment;
+      } else {
+        this.summary = "";
+        this.selectedProject = null;
+        this.selectedIssue = null;
+        this.selectedAssignee = null;
+        this.selectedReporter = null;
+        this.dueDate = "";
+        this.desscription = "";
+        this.attachment = "";
       }
     },
     onSubmit(event) {
@@ -164,25 +189,30 @@ export default {
       if (this.taskId == null) {
         this.createTask(task);
       } else {
-        this.updateTask(this.taskId,task);
+        this.updateTask(this.taskId, task);
       }
     },
     onReset(event) {
       event.preventDefault();
+      this.setDataForm();
     },
     async createTask(task) {
       const response = await this.$axios
         .$post(this.constantSystem.BASE_API, task)
         .then((res) => {
-          console.log("success");
-          console.log(res);
+          var createAnother = this.createAnother;
+          if (createAnother == "true") {
+            this.setDataForm();
+          } else {
+            this.$bvModal.hide("modal-create-issue");
+          }
         })
         .catch(({ response: err }) => {
           console.log("fail");
-          console.log(err);
+          this.handlingError(err);
         });
     },
-    async updateTask(taskId,task) {
+    async updateTask(taskId, task) {
       console.log(task);
       var url = this.constantSystem.BASE_API + "/" + taskId;
       const response = await this.$axios
@@ -208,6 +238,10 @@ export default {
         ? files[0].name
         : `${files.length} files selected`;
     },
+    handlingError(error) {
+      var listErro = error.data;
+      //show error
+    },
   },
   mounted() {
     this.findTask(this.taskId);
@@ -217,10 +251,12 @@ export default {
 <style>
 #form-create .my-1 {
   margin-bottom: 20px !important;
+  padding: 0 40px;
 }
 .footer-modal {
   border-top: 1px solid #dee2e6;
-  padding-top: 20px;
+  padding: 20px;
+  padding-bottom: 0;
   margin-top: 20px;
   justify-content: flex-end;
 }

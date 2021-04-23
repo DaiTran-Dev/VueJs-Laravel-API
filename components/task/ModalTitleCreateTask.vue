@@ -6,7 +6,10 @@
       <h1 class="h2">{{ title }}</h1>
       <div class="btn-toolbar mb-2 mb-md-0">
         <div class="btn-group mr-2">
-          <button class="btn btn-lg btn-outline-secondary" @click="$emit('click-create',null)">
+          <button
+            class="btn btn-lg btn-outline-secondary"
+            @click="$emit('click-create', null)"
+          >
             Create Task
           </button>
         </div>
@@ -34,4 +37,8 @@ export default {
 };
 </script>
 <style>
+#modal-create-issue .modal-body {
+  padding-left: 0;
+  padding-right: 0;
+}
 </style>
