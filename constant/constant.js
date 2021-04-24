@@ -1,6 +1,5 @@
-<script>
 //Project
-const PROJECT = [
+export const PROJECT = [
   { value: "", text: "Please select an option" },
   { value: 1, text: "Demo project laravel" },
   { value: 2, text: "Project python" },
@@ -8,7 +7,7 @@ const PROJECT = [
 ];
 
 //Issue Type
-const ISSUE = [
+export const ISSUE = [
   { value: "", text: "Please select an option" },
   { value: 1, text: "Task" },
   { value: 2, text: "Erros" },
@@ -16,21 +15,21 @@ const ISSUE = [
 ];
 
 // Reporter
-const REPORTER = [
+export const REPORTER = [
   { value: "", text: "Please select an option" },
   { value: 1, text: "Jonie [Admin]" },
   { value: 2, text: "Rel [Employee]" },
 ];
 
 // Assignee
-const ASSIGNEE = [
+export const ASSIGNEE = [
   { value: "", text: "Please select an option" },
   { value: 1, text: "Automatic" },
   { value: 2, text: "Rel Dai" },
 ];
 
 //Fields table task
-const FIELDS_TABLE_TASK = [
+export const FIELDS_TABLE_TASK = [
   { key: "id", sortable: true },
   { key: "project", sortable: true },
   { key: "issue_type", sortable: true },
@@ -43,13 +42,12 @@ const FIELDS_TABLE_TASK = [
 ];
 
 //Base url API
-const BASE_API = "http://127.0.0.1:8000/api/tasks";
-export default {
-  BASE_API: BASE_API,
-  PROJECT: PROJECT,
-  REPORTER: REPORTER,
-  ASSIGNEE: ASSIGNEE,
-  ISSUE: ISSUE,
-  FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
-};
-</script>
+export const BASE_API = "http://127.0.0.1:8000/api/tasks";
+
+//Constant error
+export const ERROR_TASK = [
+  { name: 'project_id', status: null, message: "" },
+  { name: 'issue_type', status: null, message: "" },
+  { name: 'reporter', status: null, message: "" },
+  { name: 'summary', status: null, message: "" }
+]

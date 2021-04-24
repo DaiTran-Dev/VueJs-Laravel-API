@@ -4,6 +4,7 @@
       title="Task"
       :taskId="taskId"
       @click-create="editAction($event)"
+      @load-table="getAllTask()"
     ></ModalTitleCreateTask>
     <div>
       <b-form-input
@@ -20,15 +21,16 @@
     ></ListTaskTable>
   </div>
 </template>
+
 <script>
-import constantSystem from "../../constant/constantSystem.vue";
 import ModalTitleCreateTask from "../../components/task/ModalTitleCreateTask";
 import ListTaskTable from "../../components/task/ListTaskTable.vue";
+import { BASE_API } from "../../constant/constant";
 
 export default {
   data() {
     return {
-      constantSystem: constantSystem,
+      baseApi: BASE_API,
       itemsTable: [],
       taskId: null,
       searchText: "",
@@ -40,17 +42,18 @@ export default {
   },
   methods: {
     async getAllTask() {
-      const response = await this.$axios.$get(this.constantSystem.BASE_API);
+      console.log("asd");
+      const response = await this.$axios.$get(this.baseApi);
       this.itemsTable = response;
     },
     async getTaskBySummary(summary) {
-      var url = this.constantSystem.BASE_API + "/summary/like/" + summary;
+      var url = this.baseApi + "/summary/like/" + summary;
       const response = await this.$axios.$get(url).then((res) => {
         this.itemsTable = res;
       });
     },
     async deleteTask(id) {
-      var url = this.constantSystem.BASE_API + "/" + id;
+      var url = this.baseApi + "/" + id;
       const response = await this.$axios.$delete(url);
       this.getAllTask();
     },
@@ -77,5 +80,3 @@ export default {
   },
 };
 </script>
-<style>
-</style>

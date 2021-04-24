@@ -10,13 +10,14 @@
         <!-- End sidebar -->
         <!-- Start Content page -->
         <b-col md="10" class="pl-0">
-          <Nuxt/>
+          <Nuxt />
         </b-col>
         <!-- End Content page -->
       </b-row>
     </b-container>
   </div>
 </template>
+
 <script>
 import AppHeader from "../components/AppHeader.vue";
 import AppSidebar from "../components/AppSidebar.vue";

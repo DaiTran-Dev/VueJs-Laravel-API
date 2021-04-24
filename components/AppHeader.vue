@@ -17,9 +17,11 @@
     </b-navbar-nav>
   </b-navbar>
 </template>
+
 <script>
 export default {};
 </script>
+
 <style>
 #header .navbar-brand {
   padding-top: 0.75rem;

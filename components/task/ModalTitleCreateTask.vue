@@ -17,12 +17,13 @@
     </div>
     <b-modal id="modal-create-issue" size="lg" title="Create issue" hide-footer>
       <!-- //Form creat -->
-      <CreatTask :taskId="taskId"></CreatTask>
+      <CreateTask :taskId="taskId" @load-table="$emit('load-table',true)"></CreateTask>
     </b-modal>
   </div>
 </template>
+
 <script>
-import CreatTask from "./CreateTask.vue";
+import CreateTask from "./CreateTask.vue";
 
 export default {
   data() {
@@ -31,11 +32,12 @@ export default {
     };
   },
   components: {
-    CreatTask,
+    CreateTask,
   },
   props: ["title", "taskId"],
 };
 </script>
+
 <style>
 #modal-create-issue .modal-body {
   padding-left: 0;

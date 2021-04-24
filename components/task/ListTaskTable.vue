@@ -2,23 +2,23 @@
   <div>
     <b-table
       :items="itemsTable"
-      :fields="constantSystem.FIELDS_TABLE_TASK"
+      :fields="constant.FIELDS_TABLE_TASK"
       :sort-by.sync="sortBy"
       :sort-desc.sync="sortDesc"
       responsive="sm"
       bordered
     >
       <template #cell(project)="project_id">
-        {{ getNameById(project_id.value, constantSystem.PROJECT) }}
+        {{ getNameById(project_id.value, constant.PROJECT) }}
       </template>
       <template #cell(issue_type)="issue_type_id">
-        {{ getNameById(issue_type_id.value, constantSystem.ISSUE) }}
+        {{ getNameById(issue_type_id.value, constant.ISSUE) }}
       </template>
       <template #cell(reporter)="reporter_id">
-        {{ getNameById(reporter_id.value, constantSystem.REPORTER) }}
+        {{ getNameById(reporter_id.value, constant.REPORTER) }}
       </template>
       <template #cell(assignee)="assignee_id">
-        {{ getNameById(assignee_id.value, constantSystem.ASSIGNEE) }}
+        {{ getNameById(assignee_id.value, constant.ASSIGNEE) }}
       </template>
       <template #cell(edit)="row">
         <b-button
@@ -39,21 +39,37 @@
     </b-table>
   </div>
 </template>
+
 <script>
-import constantSystem from "../../constant/constantSystem.vue";
+import {
+  ASSIGNEE,
+  BASE_API,
+  FIELDS_TABLE_TASK,
+  REPORTER,
+  ISSUE,
+  PROJECT,
+} from "../../constant/constant.js";
+
 export default {
   data() {
     return {
       sortBy: "age",
       sortDesc: false,
-      constantSystem: constantSystem,
+      constant: {
+        ASSIGNEE: ASSIGNEE,
+        BASE_API: BASE_API,
+        FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
+        REPORTER: REPORTER,
+        ISSUE: ISSUE,
+        PROJECT: PROJECT,
+      },
     };
   },
   props: ["itemsTable"],
   methods: {
-    getNameById($id, $array = []) {
-      var result = $array.find(($x) => {
-        return $x.value == $id;
+    getNameById(id, $listMaster = []) {
+      var result = $listMaster.find((item) => {
+        return item.value == id;
       });
       if (result) {
         return result.text;

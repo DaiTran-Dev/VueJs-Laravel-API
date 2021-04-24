@@ -8,9 +8,16 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedProject"
-            :options="constantSystem.PROJECT"
+            :options="constant.PROJECT"
             size="sm"
+            :state="errorTask[0].status"
+            aria-describedby="input-live-help input-live-feedback-project"
+            placeholder="Enter your name"
+            trim
           ></b-form-select>
+          <b-form-invalid-feedback id="input-live-feedback-project">
+            {{ errorTask[0].message }}
+          </b-form-invalid-feedback>
         </b-col>
       </b-row>
       <b-row class="my-1">
@@ -20,9 +27,16 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedIssue"
-            :options="constantSystem.ISSUE"
+            :options="constant.ISSUE"
             size="sm"
+            :state="errorTask[1].status"
+            aria-describedby="input-live-help input-live-feedback-issue"
+            placeholder="Enter your name"
+            trim
           ></b-form-select>
+          <b-form-invalid-feedback id="input-live-feedback-issue">
+            {{ errorTask[1].message }}
+          </b-form-invalid-feedback>
         </b-col>
       </b-row>
       <b-row class="my-1">
@@ -34,13 +48,13 @@
             type="text"
             size="sm"
             v-model="summary"
-            :state="summaryState"
+            :state="errorTask[3].status"
             aria-describedby="input-live-help input-live-feedback-summary"
             placeholder="Enter your name"
             trim
           ></b-form-input>
           <b-form-invalid-feedback id="input-live-feedback-summary">
-            {{summaryErrorMessage}}
+            {{ errorTask[3].message }}
           </b-form-invalid-feedback>
         </b-col>
       </b-row>
@@ -51,9 +65,16 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedReporter"
-            :options="constantSystem.REPORTER"
+            :options="constant.REPORTER"
             size="sm"
+            :state="errorTask[2].status"
+            aria-describedby="input-live-help input-live-feedback-reporter"
+            placeholder="Enter  reporter"
+            trim
           ></b-form-select>
+          <b-form-invalid-feedback id="input-live-feedback-reporter">
+            {{ errorTask[2].message }}
+          </b-form-invalid-feedback>
         </b-col>
       </b-row>
       <b-row class="my-1">
@@ -98,7 +119,7 @@
         <b-col sm="5">
           <b-form-select
             v-model="selectedAssignee"
-            :options="constantSystem.ASSIGNEE"
+            :options="constant.ASSIGNEE"
             size="sm"
           ></b-form-select>
         </b-col>
@@ -125,7 +146,16 @@
 </template>
 
 <script>
-import constantSystem from "../../constant/constantSystem.vue";
+import {
+  ASSIGNEE,
+  BASE_API,
+  FIELDS_TABLE_TASK,
+  REPORTER,
+  ISSUE,
+  PROJECT,
+  ERROR_TASK,
+} from "../../constant/constant.js";
+
 export default {
   data() {
     return {
@@ -136,15 +166,16 @@ export default {
       desscription: "",
       dueDate: "",
       summary: "",
-      constantSystem: constantSystem,
+      constant: {
+        ASSIGNEE: ASSIGNEE,
+        BASE_API: BASE_API,
+        FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
+        REPORTER: REPORTER,
+        ISSUE: ISSUE,
+        PROJECT: PROJECT,
+      },
+      errorTask: ERROR_TASK,
       createAnother: false,
-      summaryState: null,
-      projectState:null,
-      reporterState:null,
-      summaryErrorMessage:"",
-      projectErrorMessage:"",
-      reporterErrorMessage:"",
-
     };
   },
   props: ["activeForm", "taskId", "btnOpen"],
@@ -172,16 +203,17 @@ export default {
         this.dueDate = task.due_date;
         this.desscription = task.description;
         this.attachment = task.attachment;
-      } else {
-        this.summary = "";
-        this.selectedProject = null;
-        this.selectedIssue = null;
-        this.selectedAssignee = null;
-        this.selectedReporter = null;
-        this.dueDate = "";
-        this.desscription = "";
-        this.attachment = "";
       }
+    },
+    resetForm() {
+      this.summary = "";
+      this.selectedProject = null;
+      this.selectedIssue = null;
+      this.selectedAssignee = null;
+      this.selectedReporter = null;
+      this.dueDate = "";
+      this.desscription = "";
+      this.attachment = "";
     },
     onSubmit(event) {
       event.preventDefault();
@@ -194,18 +226,20 @@ export default {
     },
     onReset(event) {
       event.preventDefault();
-      this.setDataForm();
+      this.resetForm();
     },
     async createTask(task) {
       const response = await this.$axios
-        .$post(this.constantSystem.BASE_API, task)
+        .$post(this.constant.BASE_API, task)
         .then((res) => {
           var createAnother = this.createAnother;
           if (createAnother == "true") {
-            this.setDataForm();
+            this.resetForm();
           } else {
             this.$bvModal.hide("modal-create-issue");
           }
+          this.eventLoadTableTask();
+          this.resethandlingError();
         })
         .catch(({ response: err }) => {
           console.log("fail");
@@ -213,34 +247,47 @@ export default {
         });
     },
     async updateTask(taskId, task) {
-      console.log(task);
-      var url = this.constantSystem.BASE_API + "/" + taskId;
+      var url = this.constant.BASE_API + "/" + taskId;
       const response = await this.$axios
         .$put(url, task)
         .then((res) => {
-          console.log("success");
-          console.log(res);
+          this.$bvModal.hide("modal-create-issue");
+          this.eventLoadTableTask();
+          this.resethandlingError();
         })
         .catch(({ response: err }) => {
-          console.log("fail");
-          console.log(err);
+          this.handlingError(err);
         });
     },
     async findTask(taskId) {
       if (taskId != null) {
-        var url = this.constantSystem.BASE_API + "/" + taskId;
+        var url = this.constant.BASE_API + "/" + taskId;
         const response = await this.$axios.$get(url);
         this.setDataForm(response);
       }
+    },
+    eventLoadTableTask() {
+      this.$emit("load-table", true);
     },
     formatFileNames(files) {
       return files.length === 1
         ? files[0].name
         : `${files.length} files selected`;
     },
+    resethandlingError() {
+      this.errorTask.forEach((error) => {
+        error.status = null;
+      });
+    },
     handlingError(error) {
-      var listErro = error.data;
-      //show error
+      var listErroResponse = new Array(error.data.errors)[0];
+      //set error
+      this.errorTask.forEach((error) => {
+        if (listErroResponse.hasOwnProperty(error.name)) {
+          error.status = false;
+          error.message = listErroResponse[error.name][0];
+        }
+      });
     },
   },
   mounted() {
@@ -248,6 +295,7 @@ export default {
   },
 };
 </script>
+
 <style>
 #form-create .my-1 {
   margin-bottom: 20px !important;
