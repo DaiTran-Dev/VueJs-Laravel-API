@@ -7,7 +7,12 @@
     class="p-0 flex-md-nowrap"
     id="header"
   >
-    <b-navbar-brand href="#" class="col-md-2">Company name</b-navbar-brand>
+    <b-navbar-brand href="#" class="col-md-2 pl-4">
+      <div id="logo">
+        <b-img fluid src="../assets/devfast-logo.png" alt="Image 1"></b-img>
+        <span>Devfast</span>
+      </div>
+    </b-navbar-brand>
     <b-form-input
       class="w-100 form-control-dark"
       placeholder="Search"
@@ -24,8 +29,6 @@ export default {};
 
 <style>
 #header .navbar-brand {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
   font-size: 1rem;
   background-color: rgba(0, 0, 0, 0.25);
   box-shadow: inset -1px 0 0 rgb(0 0 0 / 25%);
@@ -33,17 +36,23 @@ export default {};
 }
 #header .form-control:focus {
   border-color: transparent;
-  box-shadow:none;
+  box-shadow: none;
 }
 .form-control-dark {
   color: #fff;
   background-color: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.1);
   border-radius: 0 !important;
-  padding: 1.3rem 1rem;
+  padding: 1.5rem 1rem;
 }
 #header .nav-link {
   padding-top: 0;
   padding-bottom: 0;
+}
+#logo img {
+  height: 44px;
+}
+#logo span {
+  font-size: 20px;
 }
 </style>
