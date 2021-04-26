@@ -30,7 +30,6 @@ import { BASE_API } from "../../constant/constant";
 export default {
   data() {
     return {
-      baseApi: BASE_API,
       itemsTable: [],
       taskId: null,
       searchText: "",
@@ -42,7 +41,6 @@ export default {
   },
   methods: {
     async getAllTask() {
-      console.log("asd");
       const response = await this.$axios.$get(this.baseApi);
       this.itemsTable = response;
     },
@@ -74,6 +72,11 @@ export default {
         this.getAllTask();
       }
     },
+  },
+  computed:{
+    baseApi(){
+      return BASE_API;
+    }
   },
   mounted() {
     this.getAllTask();

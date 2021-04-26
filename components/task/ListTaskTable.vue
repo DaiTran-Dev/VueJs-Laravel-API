@@ -55,17 +55,21 @@ export default {
     return {
       sortBy: "age",
       sortDesc: false,
-      constant: {
+    };
+  },
+  props: ["itemsTable"],
+  computed:{
+    constant(){
+      return {
         ASSIGNEE: ASSIGNEE,
         BASE_API: BASE_API,
         FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
         REPORTER: REPORTER,
         ISSUE: ISSUE,
         PROJECT: PROJECT,
-      },
-    };
+      }
+    }
   },
-  props: ["itemsTable"],
   methods: {
     getNameById(id, $listMaster = []) {
       var result = $listMaster.find((item) => {

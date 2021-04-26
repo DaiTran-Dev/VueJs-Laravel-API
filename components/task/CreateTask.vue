@@ -166,19 +166,23 @@ export default {
       desscription: "",
       dueDate: "",
       summary: "",
-      constant: {
+      errorTask: ERROR_TASK,
+      createAnother: false,
+    };
+  },
+  props: ["activeForm", "taskId", "btnOpen"],
+  computed: {
+    constant() {
+      return {
         ASSIGNEE: ASSIGNEE,
         BASE_API: BASE_API,
         FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
         REPORTER: REPORTER,
         ISSUE: ISSUE,
         PROJECT: PROJECT,
-      },
-      errorTask: ERROR_TASK,
-      createAnother: false,
-    };
+      };
+    },
   },
-  props: ["activeForm", "taskId", "btnOpen"],
   methods: {
     getDataForm() {
       var task = {
@@ -232,8 +236,8 @@ export default {
       const response = await this.$axios
         .$post(this.constant.BASE_API, task)
         .then((res) => {
-          var createAnother = this.createAnother;
-          if (createAnother == "true") {
+          var createAnother = (this.createAnother=='true');
+          if (createAnother) {
             this.resetForm();
           } else {
             this.$bvModal.hide("modal-create-issue");
