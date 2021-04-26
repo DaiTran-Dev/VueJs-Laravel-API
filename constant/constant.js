@@ -41,9 +41,6 @@ export const FIELDS_TABLE_TASK = [
   { key: "delete", sortable: false },
 ];
 
-//Base url API
-export const BASE_API = "http://127.0.0.1:8000/api/tasks";
-
 //Constant error
 export const ERROR_TASK = [
   { name: 'project_id', status: null, message: "" },

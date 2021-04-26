@@ -43,7 +43,6 @@
 <script>
 import {
   ASSIGNEE,
-  BASE_API,
   FIELDS_TABLE_TASK,
   REPORTER,
   ISSUE,
@@ -62,7 +61,6 @@ export default {
     constant(){
       return {
         ASSIGNEE: ASSIGNEE,
-        BASE_API: BASE_API,
         FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
         REPORTER: REPORTER,
         ISSUE: ISSUE,

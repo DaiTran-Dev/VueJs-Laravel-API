@@ -18,13 +18,30 @@
       placeholder="Search"
     ></b-form-input>
     <b-navbar-nav class="px-4">
-      <b-nav-item href="#" class="p-0 text-nowrap">Sign out</b-nav-item>
+      <b-nav-item class="p-0 text-nowrap" v-if="!$auth.loggedIn"
+        ><NuxtLink to="/login" class="btn btn-dark p-0"
+          >Sign In</NuxtLink
+        ></b-nav-item
+      >
+      <b-button
+        variant="dark"
+        v-if="$auth.loggedIn"
+        @click="logout()"
+        class="p-0 text-nowrap"
+        >Sign Out</b-button
+      >
     </b-navbar-nav>
   </b-navbar>
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    logout() {
+      this.$auth.logout();
+    },
+  },
+};
 </script>
 
 <style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="itemsTable.length > 0">
     <ModalTitleCreateTask
       title="Task"
       :taskId="taskId"
@@ -20,12 +20,14 @@
       @click-delete="deleteAction($event)"
     ></ListTaskTable>
   </div>
+  <div v-else>
+    <h1>Ko co data</h1>
+  </div>
 </template>
 
 <script>
 import ModalTitleCreateTask from "../../components/task/ModalTitleCreateTask";
 import ListTaskTable from "../../components/task/ListTaskTable.vue";
-import { BASE_API } from "../../constant/constant";
 
 export default {
   data() {
@@ -41,18 +43,18 @@ export default {
   },
   methods: {
     async getAllTask() {
-      const response = await this.$axios.$get(this.baseApi);
+      const response = await this.$axios.$get("tasks");
       this.itemsTable = response;
     },
     async getTaskBySummary(summary) {
-      var url = this.baseApi + "/summary/like/" + summary;
-      const response = await this.$axios.$get(url).then((res) => {
-        this.itemsTable = res;
-      });
+      const response = await this.$axios
+        .$get("summary/like/" + summary)
+        .then((res) => {
+          this.itemsTable = res;
+        });
     },
     async deleteTask(id) {
-      var url = this.baseApi + "/" + id;
-      const response = await this.$axios.$delete(url);
+      const response = await this.$axios.$delete("tasks/" + id);
       this.getAllTask();
     },
     editAction(id) {
@@ -72,11 +74,6 @@ export default {
         this.getAllTask();
       }
     },
-  },
-  computed:{
-    baseApi(){
-      return BASE_API;
-    }
   },
   mounted() {
     this.getAllTask();

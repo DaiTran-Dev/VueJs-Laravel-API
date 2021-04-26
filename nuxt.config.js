@@ -38,11 +38,27 @@ export default {
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
     '@nuxtjs/axios',
+    '@nuxtjs/auth'
   ],
   axios: {
-    // proxy: true
+    // proxy: true,
+    baseURL: 'http://127.0.0.1:8000/api/'
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
+  auth: {
+    redirect: {
+      callback: '/'
+    },
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url: 'auth/login', method: 'post' },
+          user: { url: 'auth/user', method: 'get' },
+          logout: false
+        }
+      },
+    }
+  },
 }

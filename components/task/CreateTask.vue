@@ -148,7 +148,6 @@
 <script>
 import {
   ASSIGNEE,
-  BASE_API,
   FIELDS_TABLE_TASK,
   REPORTER,
   ISSUE,
@@ -175,7 +174,6 @@ export default {
     constant() {
       return {
         ASSIGNEE: ASSIGNEE,
-        BASE_API: BASE_API,
         FIELDS_TABLE_TASK: FIELDS_TABLE_TASK,
         REPORTER: REPORTER,
         ISSUE: ISSUE,
@@ -234,7 +232,7 @@ export default {
     },
     async createTask(task) {
       const response = await this.$axios
-        .$post(this.constant.BASE_API, task)
+        .$post("tasks", task)
         .then((res) => {
           var createAnother = (this.createAnother=='true');
           if (createAnother) {
@@ -251,9 +249,8 @@ export default {
         });
     },
     async updateTask(taskId, task) {
-      var url = this.constant.BASE_API + "/" + taskId;
       const response = await this.$axios
-        .$put(url, task)
+        .$put("tasks/"+taskId, task)
         .then((res) => {
           this.$bvModal.hide("modal-create-issue");
           this.eventLoadTableTask();
@@ -265,8 +262,7 @@ export default {
     },
     async findTask(taskId) {
       if (taskId != null) {
-        var url = this.constant.BASE_API + "/" + taskId;
-        const response = await this.$axios.$get(url);
+        const response = await this.$axios.$get("taskId/"+taskId);
         this.setDataForm(response);
       }
     },
